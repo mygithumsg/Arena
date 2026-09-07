@@ -13,7 +13,7 @@ export const seedState = () => ({
     gstin: '22AAAAA0000A1Z5', stateCode: '22', stateName: 'Chhattisgarh',
     addr: 'Main Bazaar Road, Ambikapur, Surguja, CG – 497001',
     phone: '+91 90000 00000', upi: 'umeshseeds@okhdfcbank',
-    bank: 'HDFC Bank ••••1234 · IFSC HDFC0001234', licence: 'CG/SEED/LIC/2024/4471'
+    bank: 'HDFC Bank ••••1234 · IFSC HDFC0001234', licence: 'CG/SEED/LIC/2024/4471', branch: 'Main Branch · Sehore'
   },
   prefs: { roundPolicy: 'rupee', prefix: 'USB', fy: '26-27', nextSeq: 143, language: 'en' },
   taxSlabs: [0, 0.25, 3, 5, 12, 18, 28],
