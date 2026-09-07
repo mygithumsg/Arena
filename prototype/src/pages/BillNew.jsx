@@ -1,4 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+const useIsMobile = () => {
+  const [m, setM] = useState(() => window.matchMedia('(max-width:820px)').matches)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width:820px)')
+    const fn = (e) => setM(e.matches)
+    mq.addEventListener('change', fn); return () => mq.removeEventListener('change', fn)
+  }, [])
+  return m
+}
 import { useApp, setState, fmtINR, toast, setPrint, adopt } from '../App.jsx'
 import { computeInvoice, toP, fromP } from '../lib/calc.mjs'
 import { saveBill, resolveRate, editBill } from '../lib/store.mjs'
@@ -16,6 +25,7 @@ export default function BillNew({ go }) {
   const [pMode, setPMode] = useState(null)
   const [editing, setEditing] = useState(null)
   const [q, setQ] = useState('')
+  const mob = useIsMobile()
   const searchRef = useRef(null)
   const qtyRefs = useRef([])
 
@@ -109,17 +119,24 @@ export default function BillNew({ go }) {
             ))}
           </div>
         </div>
-        <div className="field">
+        <div className="field dhid-m">
           <label>Supply mode</label>
           <div className="inp num-i" style={{ lineHeight: '36px', background: interState ? 'var(--blue-100)' : 'var(--brand-50)' }}>
             {interState ? 'IGST (Inter-State)' : 'CGST + SGST (Intra-State)'}
           </div>
         </div>
-        <div className="field">
+        <div className="field dhid-m">
           <label>Credit</label>
           <div className="inp" style={{ lineHeight: '36px', fontFamily: 'var(--font-num)' }}>
             {party?.creditLimit ? `${fmtINR(Math.max(0, party.balance))} / ${fmtINR(party.creditLimit)}` : '— (cash)'}
           </div>
+        </div>
+        <div className="field wide mpills">
+          <span className={`pill ${interState ? 'part' : 'ok'}`}>{interState ? 'IGST · Inter-State' : 'CGST + SGST · Intra'}</span>
+          {party?.creditLimit
+            ? <span className="pill due">Udhaar {fmtINR(Math.max(0, party.balance))} / {fmtINR(party.creditLimit)}</span>
+            : <span className="pill off">Cash counter</span>}
+          {party?.customRates && Object.keys(party.customRates).length ? <span className="pill part">⚡ custom rates active</span> : null}
         </div>
       </div>
 
@@ -156,6 +173,14 @@ export default function BillNew({ go }) {
                 {lines.map((l, i) => {
                   const it = s.items.find((x) => x.id === l.itemId)
                   const cl = calc.lines[i]
+                  if (mob && !l.itemId) return (
+                    <tr key={i}>
+                      <td className="ln-add" colSpan={10}>
+                        <button onClick={() => searchRef.current?.focus()}>+ Add item — search se chuno</button>
+                        {lines.length > 1 && <button className="del" onClick={() => setLines((ls) => ls.filter((_, j) => j !== i))}>✕</button>}
+                      </td>
+                    </tr>
+                  )
                   return (
                     <tr key={i}>
                       <td className="muted ln-idx">{i + 1}</td>
