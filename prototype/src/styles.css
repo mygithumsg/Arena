@@ -265,8 +265,7 @@ tbody tr{transition:.12s}tbody tr:hover{background:var(--brand-50)}
   .pick{position:static;margin-top:6px;box-shadow:none;border-color:var(--line)}
   .lines-t td{border:0}
   .lines-t tr{padding:12px}
-  .lines-t td input.inp,.lines-t input.inp{font-size:16px;max-width:120px;height:36px}
-  .lines-t td .del{float:right}
+  .lines-t td .del{width:28px;height:28px;flex:0 0 28px}
   /* ===== sticky save bar (bill) ===== */
   .mbar{position:fixed;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom));z-index:55;display:flex;gap:10px;align-items:center;
     background:var(--sb-900);color:#fff;padding:10px 14px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.25)}
@@ -302,14 +301,20 @@ tbody tr{transition:.12s}tbody tr:hover{background:var(--brand-50)}
   .lines-t .ln-idx{display:none}
   .lines-t .ln-name{flex:1 1 100%;min-width:0}
   .lines-t .ln-name .mini{width:100%}
-  .lines-t .ln-qty{flex:0 1 86px}
-  .lines-t .ln-unit{flex:0 0 auto;font-size:10.5px}
-  .lines-t .ln-rate{flex:1 1 100px}
-  .lines-t .ln-disc{flex:0 1 74px}
+  .lines-t .ln-qty{flex:0 1 52px}
+  .lines-t .ln-unit{flex:0 0 auto;font-size:10px;color:var(--ink-500)}
+  .lines-t .ln-rate{flex:1 1 78px;min-width:0}
+  .lines-t .ln-rate .muted{display:none}
+  .lines-t .ln-disc{flex:0 1 48px}
   .lines-t .ln-tex{display:none}
-  .lines-t .ln-amt{margin-left:auto;font-weight:700;flex:0 0 auto}
-  .lines-t .ln-del{flex:0 0 30px;justify-content:flex-end}
-  .lines-t input.inp{width:100%!important;max-width:none;height:36px;font-size:15px;text-align:right}
+  .lines-t .ln-amt{margin-left:auto;font-weight:700;flex:0 0 auto;white-space:nowrap;font-size:12.5px}
+  .lines-t td.num{flex:0 0 auto;font-size:12.5px;white-space:nowrap}
+  .lines-t .ln-del{flex:0 0 28px;justify-content:flex-end}
+  .lines-t tr{gap:6px 7px;padding:10px 12px}
+  .lines-t input.inp{width:100%!important;max-width:none;min-width:0;height:34px;font-size:14px;padding:4px 6px;text-align:right;field-sizing:content}
+  .lines-t .ln-name .mini b{font-size:13px}
+  .lines-t .ln-name .mini small{font-size:9.5px}
+  .lines-t .ln-add .mini,.lines-t .ln-add input{width:100%;min-width:0}
   .ghost-box{overflow:visible}
   /* ===== modals full screen ===== */
   .print-root{padding:0;align-items:stretch}
