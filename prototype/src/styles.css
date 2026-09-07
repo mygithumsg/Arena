@@ -336,6 +336,29 @@ tbody tr{transition:.12s}tbody tr:hover{background:var(--brand-50)}
   .inv .tot{flex-direction:column}
   .inv .tot .r{width:100%}
 }
+@media (max-width:820px){
+  /* ===== final anti-clip pass (measured via headless at 390/320px) ===== */
+  .bill-grid{grid-template-columns:minmax(0,1fr)}
+  .line-form,.total-card{min-width:0;max-width:100%}
+  .trow{flex-wrap:wrap;min-width:0}
+  .trow>*{min-width:0}
+  .total-card .mini,.line-form .mini{min-width:0}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat,.stat .top-row,.stat .foot{min-width:0}
+  .stat .top-row{flex-wrap:wrap}
+  .stat .top-row .lbl{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lines-t td.ln-name{flex-wrap:wrap;gap:6px}
+  .cardtable td .pill{white-space:nowrap}
+  .billform .field div{min-width:0}
+  .billform .chipbtn{flex:1 1 auto;min-width:0;padding:0 10px;font-size:12px;white-space:nowrap}
+  .g-main,.g-main2{grid-template-columns:minmax(0,1fr)}
+  .phead{flex-wrap:wrap}
+  .phead .act{flex-wrap:wrap}
+  .phead .act>*{flex:0 1 auto!important}
+  .card{max-width:100%}
+  .lines-t .ln-name .mini{overflow:hidden}
+  .billform .custpick,.billform select,.billform input{min-width:0}
+}
 @media (min-width:821px){ .mobnav,.mbar,.mlogo{display:none!important} }
 
 /* ---------- theme picker (REQ-2) ---------- */

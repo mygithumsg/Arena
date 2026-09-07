@@ -12,7 +12,7 @@ export default function Dashboard({ go }) {
   const due = s.parties.reduce((a, p) => a + Math.max(0, p.balance), 0)
   const mtd = s.bills.filter((b) => b.date.startsWith(today.slice(0, 7))).reduce((a, b) => a + b.grand, 0)
   const stockValue = s.items.reduce((a, i) => a + i.stock * i.rate, 0)
-  const days = last7Days(s).slice(-range === 7 ? 7 : 7)
+  const days = last7Days(s)
   const max = Math.max(1, ...days.map((d) => d.total))
   const total7 = days.reduce((a, d) => a + d.total, 0)
   const low = lowStock(s)
@@ -62,13 +62,13 @@ export default function Dashboard({ go }) {
               <p className="sub">{lang === 'hi' ? 'पिछले 7 दिन की सकल बिक्री' : 'Gross sales over the last 7 days'}</p></div>
             <div style={{ textAlign: 'right' }}>
               <div className="sub">7-day sales</div>
-              <div style={{ fontFamily: 'var(--font-num)', fontWeight: 700 }}>{fmtINR(total7)}</div>
+              <div style={{ fontFamily: 'var(--font-num)', fontWeight: 700 }}>{fmtINR(toP(total7 / 100))}</div>
             </div>
           </div>
           <div className="chart">
             {days.map((d, i) => (
               <div key={d.key} className={`bar ${i >= days.length - 2 ? 'hot' : ''}`}>
-                <em>{fmtINR(d.total).replace('.00', '')}</em>
+                <em>{fmtINR(toP(d.total / 100)).replace('.00', '')}</em>
                 <i style={{ height: `${Math.max(2, (d.total / max) * 100)}%` }} />
                 <span>{d.label}</span>
               </div>

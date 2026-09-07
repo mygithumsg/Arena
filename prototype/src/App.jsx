@@ -41,6 +41,7 @@ const NAV = [
 export default function App() {
   const s = useApp()
   const [route, setRoute] = useState('dash')
+  window.__go = setRoute /* test hook */
   const [q, setQ] = useState('')
   const [print, setPrintState] = useState(null)
   const [themeOpen, setThemeOpen] = useState(false)

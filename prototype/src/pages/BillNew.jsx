@@ -112,7 +112,7 @@ export default function BillNew({ go }) {
         <div className="field"><label>Bill date</label>
           <input type="date" className="inp" value={d.date} onChange={(e) => setD({ ...d, date: e.target.value })} /></div>
         <div className="field"><label>Price list</label>
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {['retail', 'wholesale'].map((m2) => (
               <button key={m2} className={`chipbtn ${mode === m2 ? 'on' : ''}`} onClick={() => setPMode(m2)}
                 title={party?.customRates && Object.keys(party.customRates).length ? 'Is customer ke custom rate priority mein hain' : ''}>{m2 === 'retail' ? '🏷 Retail' : '📦 Wholesale'}</button>
@@ -300,7 +300,7 @@ export default function BillNew({ go }) {
           <div><h3>Sales Bills</h3><p className="sub">👁 reprint/share · ✎ Modify — rate snapshot frozen, edit recompute karta hai</p></div>
           <span className="muted">{s.bills.length} bills · FY {s.prefs.fy}</span>
         </div>
-        <table>
+        <table className="cardtable">
           <thead><tr><th>Invoice</th><th>Party</th><th className="num">Taxable</th><th className="num">Tax</th>
             <th className="num">Total</th><th className="num">Paid</th><th>Status</th><th /></tr></thead>
           <tbody>
@@ -309,14 +309,14 @@ export default function BillNew({ go }) {
               const bal = b.grand - b.paid
               return (
                 <tr key={b.id}>
-                  <td><b style={{ fontFamily: 'var(--font-num)', fontSize: 12 }}>{b.no}</b></td>
-                  <td>{pt?.name} <span className="muted">{b.interState ? '· IGST' : ''}</span></td>
-                  <td className="num">{fmtINR(b.taxableTotal)}</td>
-                  <td className="num">{fmtINR(b.totalTax)}</td>
-                  <td className="num"><b>{fmtINR(b.grand)}</b></td>
-                  <td className="num">{fmtINR(b.paid)}</td>
-                  <td>{bal <= 0 ? <span className="pill ok">Paid</span> : b.paid > 0 ? <span className="pill part">Partial</span> : <span className="pill due">Due</span>}</td>
-                  <td style={{ width: 84, whiteSpace: 'nowrap' }}><button className="eye" title="Print / share" onClick={() => setPrint?.(b)}>👁</button>
+                  <td data-l="Invoice"><b style={{ fontFamily: 'var(--font-num)', fontSize: 12 }}>{b.no}</b></td>
+                <td data-l="Party"> <span className="muted">{b.interState ? '· IGST' : ''}</span></td>
+                  <td data-l="Taxable" className="num">{fmtINR(b.taxableTotal)}</td>
+                  <td data-l="Tax" className="num">{fmtINR(b.totalTax)}</td>
+                  <td data-l="Total" className="num"><b>{fmtINR(b.grand)}</b></td>
+                  <td data-l="Paid" className="num">{fmtINR(b.paid)}</td>
+                  <td data-l="Status">{bal <= 0 ? <span className="pill ok">Paid</span> : b.paid > 0 ? <span className="pill part">Partial</span> : <span className="pill due">Due</span>}</td>
+                  <td data-l="" style={{ width: 84, whiteSpace: 'nowrap' }}><button className="eye" title="Print / share" onClick={() => setPrint?.(b)}>👁</button>
                     <button className="eye" title="Modify / Edit (REQ-10)" onClick={() => setEditing(b)}>✎</button></td>
                 </tr>
               )
