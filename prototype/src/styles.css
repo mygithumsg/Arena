@@ -19,7 +19,7 @@
 }
 *{box-sizing:border-box}
 html,body,#root{height:100%}
-body{margin:0;font-family:var(--font-ui);background:var(--canvas);color:var(--ink-900);
+html,body{overflow-x:clip}body{margin:0;font-family:var(--font-ui);background:var(--canvas);color:var(--ink-900);
   font-size:13.5px;-webkit-font-smoothing:antialiased}
 button{font:inherit;cursor:pointer}
 input,select{font:inherit;color:inherit}
@@ -281,6 +281,29 @@ tbody tr{transition:.12s}tbody tr:hover{background:var(--brand-50)}
   .mobnav a.on{color:var(--accent-hi)}
   .mobnav .fab{grid-column:3;width:52px;height:52px;border-radius:16px;background:var(--grad-primary);color:#fff;display:grid;place-items:center;
     font-size:24px;margin:-22px auto 6px;box-shadow:0 10px 24px rgba(var(--accent-rgb),.5);border:4px solid var(--canvas);cursor:pointer}
+  /* ===== bill screen: compact form + line cards ===== */
+  .billform{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;padding:12px 14px}
+  .billform .field{min-width:0}
+  .billform .field.wide{grid-column:1 / -1}
+  .billform .inp{height:40px}
+  .phead p{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .top .bell{display:none}
+  .content{padding-bottom:calc(158px + env(safe-area-inset-bottom))}
+  .lines-t tr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px;position:relative}
+  .lines-t td{display:flex;align-items:center;gap:8px;border:0;padding:0}
+  .lines-t td::before{content:none}
+  .lines-t .ln-idx{display:none}
+  .lines-t .ln-name{flex:1 1 100%;min-width:0}
+  .lines-t .ln-name .mini{width:100%}
+  .lines-t .ln-qty{flex:0 1 86px}
+  .lines-t .ln-unit{flex:0 0 auto;font-size:10.5px}
+  .lines-t .ln-rate{flex:1 1 100px}
+  .lines-t .ln-disc{flex:0 1 74px}
+  .lines-t .ln-tex{display:none}
+  .lines-t .ln-amt{margin-left:auto;font-weight:700;flex:0 0 auto}
+  .lines-t .ln-del{flex:0 0 30px;justify-content:flex-end}
+  .lines-t input.inp{width:100%!important;max-width:none;height:36px;font-size:15px;text-align:right}
+  .ghost-box{overflow:visible}
   /* ===== modals full screen ===== */
   .print-root{padding:0;align-items:stretch}
   .print-wrap{width:100%!important;max-width:100%;border-radius:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}

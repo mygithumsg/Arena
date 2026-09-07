@@ -92,8 +92,8 @@ export default function BillNew({ go }) {
         </div>
       </div>
 
-      <div className="ghost-box" style={{ marginBottom: 16 }}>
-        <div className="field" style={{ minWidth: 250 }}>
+      <div className="ghost-box billform" style={{ marginBottom: 12 }}>
+        <div className="field wide">
           <label>Party / Customer (F2)</label>
           <select className="inp" value={d.partyId} onChange={(e) => setD({ ...d, partyId: e.target.value })}>
             {s.parties.map((p) => <option key={p.id} value={p.id}>{p.name} {p.gstin ? `· ${p.gstin}` : '· Unregistered'}</option>)}
@@ -101,7 +101,7 @@ export default function BillNew({ go }) {
         </div>
         <div className="field"><label>Bill date</label>
           <input type="date" className="inp" value={d.date} onChange={(e) => setD({ ...d, date: e.target.value })} /></div>
-        <div className="field"><label>Price list (REQ-3)</label>
+        <div className="field"><label>Price list</label>
           <div style={{ display: 'flex', gap: 6 }}>
             {['retail', 'wholesale'].map((m2) => (
               <button key={m2} className={`chipbtn ${mode === m2 ? 'on' : ''}`} onClick={() => setPMode(m2)}
@@ -109,7 +109,7 @@ export default function BillNew({ go }) {
             ))}
           </div>
         </div>
-        <div className="field" style={{ minWidth: 220 }}>
+        <div className="field">
           <label>Supply mode</label>
           <div className="inp num-i" style={{ lineHeight: '36px', background: interState ? 'var(--blue-100)' : 'var(--brand-50)' }}>
             {interState ? 'IGST (Inter-State)' : 'CGST + SGST (Intra-State)'}
@@ -145,7 +145,7 @@ export default function BillNew({ go }) {
           </div>
 
           <div className="rows">
-            <table className="lines-t">
+            <table className="lines-t cardtable">
               <thead><tr>
                 <th style={{ width: 26 }}>#</th><th>Item / HSN</th><th className="num" style={{ width: 78 }}>Qty</th>
                 <th style={{ width: 48 }}>Unit</th><th className="num" style={{ width: 92 }}>Rate</th>
@@ -158,41 +158,41 @@ export default function BillNew({ go }) {
                   const cl = calc.lines[i]
                   return (
                     <tr key={i}>
-                      <td className="muted">{i + 1}</td>
-                      <td data-l="Item">
+                      <td className="muted ln-idx">{i + 1}</td>
+                      <td data-l="Item" className="ln-name">
                         {it ? <div className="mini"><b>{it.name}</b><small>{it.hsn} · GST {it.taxPct}% · {l.rateFrom === 'custom' ? 'custom rate' : l.rateFrom === 'wholesale' ? 'wholesale' : 'retail'} {it.stock < it.min ? '· low stock' : ''}</small></div>
                           : <span className="muted">+ line add karo</span>}
                       </td>
-                      <td data-l="Qty"><input ref={(el) => (qtyRefs.current[i] = el)} className="inp num-i" style={{ height: 30 }} type="number" min="0" step="0.001" value={l.qty}
+                      <td data-l="Qty" className="ln-qty"><input ref={(el) => (qtyRefs.current[i] = el)} className="inp num-i" style={{ height: 30 }} type="number" min="0" step="0.001" value={l.qty}
                         onChange={(e) => setLine(i, { qty: e.target.value })}
                         onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); const nx = i + 1; if (lines[nx]?.itemId || nx < lines.length) qtyRefs.current[nx]?.focus(); else searchRef.current?.focus() } if (e.key === 'ArrowDown') { e.preventDefault(); qtyRefs.current[i + 1]?.focus() } if (e.key === 'ArrowUp') { e.preventDefault(); (i ? qtyRefs.current[i - 1] : searchRef.current)?.focus() } }} /></td>
-                      <td data-l="Unit" className="muted">{it?.unit}</td>
-                      <td data-l="Rate ₹"><input className="inp num-i" style={{ height: 30 }} type="number" step="0.01" value={l.rate}
+                      <td data-l="Unit" className="muted ln-unit">{it?.unit}</td>
+                      <td data-l="Rate ₹" className="ln-rate"><input className="inp num-i" style={{ height: 30 }} type="number" step="0.01" value={l.rate}
                         onChange={(e) => setLine(i, { rate: e.target.value, manual: true })} />
                         {l.rateFrom === 'custom' && <span className="muted" style={{ fontSize: 9.5 }}>custom⚡</span>}</td>
-                      <td data-l="Disc %"><input className="inp num-i" style={{ height: 30 }} type="number" value={l.discPct}
+                      <td data-l="Disc %" className="ln-disc"><input className="inp num-i" style={{ height: 30 }} type="number" value={l.discPct}
                         onChange={(e) => setLine(i, { discPct: e.target.value })} /></td>
-                      <td data-l="Taxable" className="num">{fmtINR(cl?.finalTaxable ?? 0)}</td>
-                      <td data-l="Tax" className="num">{it ? `${l.taxPct}%` : ''} <span style={{ color: 'var(--ink-500)' }}>{fmtINR(cl?.tax ?? 0)}</span></td>
-                      <td data-l="Amount" className="num"><b>{fmtINR(cl?.amount ?? 0)}</b></td>
-                      <td><button className="del" onClick={() => setLines((ls) => (ls.length === 1 ? [{ itemId: '', qty: 1, rate: 0, discPct: 0, taxPct: 5 }] : ls.filter((_, j) => j !== i)))}>✕</button></td>
+                      <td data-l="Taxable" className="num ln-tex">{fmtINR(cl?.finalTaxable ?? 0)}</td>
+                      <td data-l="Tax" className="num ln-tex">{it ? `${l.taxPct}%` : ''} <span style={{ color: 'var(--ink-500)' }}>{fmtINR(cl?.tax ?? 0)}</span></td>
+                      <td data-l="Amount" className="num ln-amt"><b>{fmtINR(cl?.amount ?? 0)}</b></td>
+                      <td className="ln-del"><button className="del" onClick={() => setLines((ls) => (ls.length === 1 ? [{ itemId: '', qty: 1, rate: 0, discPct: 0, taxPct: 5 }] : ls.filter((_, j) => j !== i)))}>✕</button></td>
                     </tr>
                   )
                 })}
-                <tr><td colSpan={10}>
+                <tr><td colSpan={10} className="ln-name" data-l="">
                   <button className="btn sm" onClick={() => setLines((ls) => [...ls, { itemId: '', qty: 1, rate: 0, discPct: 0, taxPct: 5 }])}>+ Add empty line</button>
                   <button className="btn sm" style={{ marginLeft: 8 }} onClick={() => { setCharges((c) => [...c, { label: 'Freight', amount: 0, taxable: true }]) }}>+ Freight / packing charge</button>
                   <button className="btn sm" style={{ marginLeft: 8 }} onClick={() => addFromItem(s.items.find((i) => i.service))}>+ Service line</button>
                 </td></tr>
                 {charges.map((c, i) => (
                   <tr key={'ch' + i}>
-                    <td />
-                    <td><input className="inp" style={{ height: 30 }} value={c.label} onChange={(e) => setCharges((cs) => cs.map((x, j) => j === i ? { ...x, label: e.target.value } : x))} /></td>
-                    <td colSpan={3}>
+                    <td className="ln-idx" />
+                    <td className="ln-name"><input className="inp" style={{ height: 30 }} value={c.label} onChange={(e) => setCharges((cs) => cs.map((x, j) => j === i ? { ...x, label: e.target.value } : x))} /></td>
+                    <td colSpan={3} className="ln-qty" data-l="">
                       <input className="inp num-i" style={{ height: 30 }} type="number" step="0.01" placeholder="₹ amount" value={fromP(c.amount) || ''}
                         onChange={(e) => setCharges((cs) => cs.map((x, j) => j === i ? { ...x, amount: toP(e.target.value) } : x))} />
                     </td>
-                    <td className="muted">
+                    <td className="muted ln-disc" data-l="" style={{ flex: '1 1 100%' }}>
                       <label style={{ fontWeight: 600 }}>
                         <input type="checkbox" checked={c.taxable} onChange={(e) => setCharges((cs) => cs.map((x, j) => j === i ? { ...x, taxable: e.target.checked } : x))} /> taxable @ max slab
                       </label>
