@@ -83,7 +83,7 @@ export default function InvoicePrint({ bill, onClose }) {
             <div className="row"><span className="k">Balance after this payment</span><span className="v">{fmtINR(Math.max(0, party.balance))} Dr</span></div>
             {bill.note && <div className="row"><span className="k">Note</span><span className="v">{bill.note}</span></div>}
           </div>
-          <div className="word" style={{ marginTop: '4mm' }}>Amount in words: <span>{inWords(bill.amount)}</span> only.</div>
+          <div className="word" style={{ marginTop: '4mm' }}>Amount in words: <span>{inWords(bill.amount)}</span></div>
           <div className="foot" style={{ gridTemplateColumns: '1fr .9fr' }}>
             <div><div className="h">Note</div><div className="l">Keep this receipt for your records.<br />Subject to {s.company.stateName || 'Madhya Pradesh'} jurisdiction.</div></div>
             <div className="sign"><div className="l">For {s.company.legal}</div><div className="l2">Authorised Signatory</div></div>
@@ -138,44 +138,42 @@ export default function InvoicePrint({ bill, onClose }) {
     )
   }
 
-  /* ---------- A4 / A5 — professional GST tax invoice ---------- */
-  const NCOL = bill.interState ? 8 : 9
+  /* ---------- A4 / A5 — Tally-style GST tax invoice (classic print) ---------- */
+  const cgT = taxByComp('cgst'), sgT = taxByComp('sgst'), igT = taxByComp('igst')
+  const gross = (bill.grand || 0) - (bill.roundOff || 0)
   return (
     <Shell paper={paper} setPaper={setPaper} onClose={onClose} share={share} links={links} bill={bill}>
-      <div className={`inv ${paper}`}>
-        <Head s={s} title="TAX INVOICE" bill={bill} paidFull={paidFull} />
-        <div className="meta">
-          <div><div className="k">Bill Date · बिल दिनांक</div><div className="v">{date}</div></div>
-          <div><div className="k">Created · बनाया गया</div><div className="v">{created} by Umesh</div></div>
-          <div><div className="k">Payment</div><div className="v">{bill.mode === 'Credit' ? 'Udhaar · Credit' : 'Paid · ' + bill.mode}</div></div>
-          <div><div className="k">Price Basis{bill.revision > 1 ? ' · REVISED' : ''}</div><div className="v">{(bill.priceMode || 'retail')} rate{bill.revision > 1 ? ` · rev ${bill.revision}` : ''}</div></div>
+      <div className={`inv tly ${paper}`}>
+        <div className="thd">
+          <div className="tname">Umesh Seeds</div>
+          <div className="tlegal">{s.company.legal}{s.company.branch ? ` · ${s.company.branch}` : ''}</div>
+          <div className="taddr">{s.company.addr}</div>
+          <div className="tgst">GSTIN: <b>{s.company.gstin}</b> · Ph: <b>{s.company.phone}</b> · State Code: <b>{s.company.stateCode}</b> ({s.company.stateName}) · Seed Lic.: {s.company.licence}</div>
+          <div className="ttitle">TAX INVOICE</div>
         </div>
-        <div className="cols">
-          <div>
-            <div className="h">Bill To · ग्राहक</div>
-            <b>{party.name}</b>
-            <div className="s">{party.gstin ? `GSTIN ${party.gstin}` : 'Unregistered'} · State {party.stateCode}{party.phone ? ` · Ph ${party.phone}` : ''}<br />{party.addr || '—'}</div>
-          </div>
-          <div>
-            <div className="h">Supply Details · आपूर्ति</div>
-            <div className="s">Place of supply: <b>{party.stateCode}</b> — {bill.interState ? 'Inter-State → IGST' : 'Intra-State → CGST + SGST'}<br />
-              Reverse charge: <b>No</b> · Transport/vehicle: <b>{bill.notes || '—'}</b>{bill.editedAt ? <><br />Modified on: <b>{fmtTm(bill.editedAt)}</b> (original rates stay frozen)</> : null}</div>
-          </div>
+        <div className="tinfo">
+          <div className="c wide"><span className="k">M/s</span><span className="v"><b>{party.name}</b>{party.addr ? ` — ${party.addr}` : ''} · {party.gstin ? `GSTIN ${party.gstin}` : 'Unregistered'}{party.phone ? ` · ${party.phone}` : ''}</span></div>
+          <div className="c"><span className="k">Invoice No.</span><span className="v">{bill.no}</span></div>
+          <div className="c"><span className="k">Date</span><span className="v">{date}</span></div>
+          <div className="c"><span className="k">Payment</span><span className="v">{bill.mode === 'Credit' ? 'Credit' : 'Paid · ' + bill.mode}</span></div>
+          <div className="c"><span className="k">Place of Supply</span><span className="v">{party.stateCode} — {bill.interState ? 'Inter-State (IGST)' : 'Intra-State (CGST+SGST)'}</span></div>
+          <div className="c"><span className="k">Rate Basis</span><span className="v">{(bill.priceMode || 'retail')} rates{bill.revision > 1 ? ` · REVISED (rev ${bill.revision})` : ''}</span></div>
+          <div className="c"><span className="k">Notes / Vehicle</span><span className="v">{bill.notes || '—'}{bill.editedAt ? ` · modified ${fmtTm(bill.editedAt)}` : ''}</span></div>
         </div>
         <table className="tab">
           <thead>
             <tr>
-              <th style={{ width: '3.5%' }}>#</th>
-              <th style={{ width: '29%' }}>Description of Goods · HSN / GST</th>
-              <th style={{ width: '9%' }}>Unit·Qty</th>
-              <th style={{ width: '9%' }}>Rate ₹</th>
-              <th style={{ width: '7%' }}>Disc</th>
-              <th style={{ width: '12%' }}>Taxable ₹</th>
-              {bill.interState ? <th style={{ width: '11%' }}>IGST</th> : <><th style={{ width: '10%' }}>CGST</th><th style={{ width: '10%' }}>SGST</th></>}
-              <th style={{ width: '12%' }}>Amount ₹</th>
+              <th style={{ width: '3%' }}>No.</th>
+              <th style={{ width: '26%' }}>Description of Goods</th>
+              <th style={{ width: '7%' }}>HSN/SAC</th>
+              <th style={{ width: '5%' }}>Unit</th>
+              <th style={{ width: '7%' }}>Qty</th>
+              <th style={{ width: '10%' }}>Rate</th>
+              <th style={{ width: '6%' }}>Disc</th>
+              <th style={{ width: '11%' }}>Taxable</th>
+              {bill.interState ? <th style={{ width: '10%' }}>IGST</th> : <><th style={{ width: '8%' }}>CGST</th><th style={{ width: '8%' }}>SGST</th></>}
+              <th style={{ width: '11%' }}>Total</th>
             </tr>
-            {!bill.interState && <tr className="g"><th colSpan={6}>ASSESSABLE VALUE</th><th colSpan={2}>TAX BREAKUP</th><th>TOTAL</th></tr>}
-            {bill.interState && <tr className="g"><th colSpan={6}>ASSESSABLE VALUE</th><th>TAX</th><th>TOTAL</th></tr>}
           </thead>
           <tbody>
             {(bill.lines || []).map((l, i) => {
@@ -184,26 +182,28 @@ export default function InvoicePrint({ bill, onClose }) {
               const half = l.taxPct / 2
               return (
                 <tr key={i}>
-                  <td className="mono" style={{ color: '#8aa197' }}>{i + 1}</td>
-                  <td><span className="nm">{l.itemName || it.name}</span>
-                    <span className="sub">HSN {l.hsn || it.hsn} · GST {l.taxPct}% · {l.rateFrom === 'custom' ? 'custom ⚡ rate' : l.rateFrom === 'wholesale' ? 'wholesale rate' : 'retail rate'}</span></td>
-                  <td className="mono">{it.unit} · {l.qty}</td>
+                  <td>{i + 1}</td>
+                  <td className="dl"><span className="nm">{l.itemName || it.name}</span>
+                    <span className="sub">GST {l.taxPct}% · {l.rateFrom === 'custom' ? 'custom ⚡ rate' : l.rateFrom === 'wholesale' ? 'wholesale rate' : 'retail rate'}</span></td>
+                  <td className="mono">{l.hsn || it.hsn}</td>
+                  <td>{it.unit}</td>
+                  <td className="mono">{l.qty}</td>
                   <td className="mono">{fmtINR(l.rate)}</td>
                   <td className="mono">{l.discPct ? l.discPct + '%' : l.discAmt ? fmtINR(l.discAmt) : '—'}</td>
                   <td className="mono">{fmtINR(l.finalTaxable)}</td>
                   {bill.interState
-                    ? <td className="mono">{l.taxPct}% · {fmtINR(l.tax)}</td>
-                    : <><td className="mono">{half}% · {fmtINR(cg)}</td><td className="mono">{half}% · {fmtINR(sg)}</td></>}
+                    ? <td className="mono">{l.taxPct}%<br />{fmtINR(l.tax)}</td>
+                    : <><td className="mono">{half}%<br />{fmtINR(cg)}</td><td className="mono">{half}%<br />{fmtINR(sg)}</td></>}
                   <td className="mono"><b>{fmtINR(l.amount)}</b></td>
                 </tr>
               )
             })}
             {(bill.charges || []).map((c, i) => (
               <tr key={'c' + i}>
-                <td className="mono" style={{ color: '#8aa197' }}>•</td>
-                <td><span className="nm" style={{ fontWeight: 600 }}>{c.label}</span>
-                  <span className="sub">{c.taxable ? `Freight/packing — taxable @ max slab ${c.rate || 18}%` : 'Non-taxable charge'}</span></td>
-                <td colSpan={3} />
+                <td>{(bill.lines || []).length + i + 1}</td>
+                <td className="dl"><span className="nm">{c.label}</span>
+                  <span className="sub">{c.taxable ? `Freight/other — taxable @ ${c.rate || 18}%` : 'Non-taxable charge'}</span></td>
+                <td className="mono">—</td><td>—</td><td>1</td><td className="mono">{fmtINR(c.amount)}</td><td>—</td>
                 <td className="mono">{fmtINR(c.amount)}</td>
                 {bill.interState
                   ? <td className="mono">{c.tax ? fmtINR(c.tax) : '—'}</td>
@@ -211,68 +211,65 @@ export default function InvoicePrint({ bill, onClose }) {
                 <td className="mono"><b>{fmtINR(c.amount + c.tax)}</b></td>
               </tr>
             ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan={NCOL - 3} style={{ textAlign: 'right', fontWeight: 800, letterSpacing: '.08em' }}>TOTALS</td>
+            <tr className="tlytot">
+              <td colSpan={6} style={{ textAlign: 'right', fontWeight: 800, letterSpacing: '.12em', textTransform: 'uppercase' }}>Total</td>
+              <td className="mono">{bill.discTotal ? '‒' + fmtINR(bill.discTotal).replace('\u20b9', '\u20b9') : '—'}</td>
               <td className="mono"><b>{fmtINR(bill.taxableTotal)}</b></td>
-              <td colSpan={bill.interState ? 1 : 2} className="mono" style={{ textAlign: 'right' }}>incl. tax {fmtINR(bill.totalTax)}</td>
-              <td className="mono"><b>{fmtINR(bill.grand)}</b></td>
+              {bill.interState
+                ? <td className="mono"><b>{fmtINR(igT)}</b></td>
+                : <><td className="mono"><b>{fmtINR(cgT)}</b></td><td className="mono"><b>{fmtINR(sgT)}</b></td></>}
+              <td className="mono"><b>{fmtINR(gross)}</b></td>
             </tr>
-          </tfoot>
+          </tbody>
         </table>
-        <div className="tot">
-          <div className="slab">
-            <div className="h">Tax Summary by Slab · {bill.interState ? 'IGST' : 'CGST + SGST'}</div>
-            <table>
-              <thead><tr><th>Rate</th><th>Taxable</th><th>CGST</th><th>SGST</th><th>IGST</th><th>Total</th></tr></thead>
-              <tbody>{(bill.slabs || []).map((sl, i) => (
-                <tr key={i}><td>{sl.rate}%</td><td>{fmtINR(sl.taxable)}</td>
-                  <td>{bill.interState ? '—' : fmtINR(Math.round(sl.tax / 2))}</td>
-                  <td>{bill.interState ? '—' : fmtINR(sl.tax - Math.round(sl.tax / 2))}</td>
-                  <td>{bill.interState ? fmtINR(sl.tax) : '—'}</td>
-                  <td><b>{fmtINR(sl.taxable + sl.tax)}</b></td></tr>
-              ))}</tbody>
-            </table>
-            <div className="word">Amount in words: <span>{inWords(bill.grand)}</span> only — payable per terms above.</div>
-          </div>
-          <div className="box">
-            <div className="row"><span className="k">Sub total</span><span className="v">{fmtINR(bill.subTotal)}</span></div>
-            {bill.discTotal > 0 && <div className="row d"><span className="k">Discount</span><span className="v">−{fmtINR(bill.discTotal)}</span></div>}
-            <div className="row"><span className="k">Taxable value</span><span className="v">{fmtINR(bill.taxableTotal)}</span></div>
-            {bill.interState
-              ? <div className="row"><span className="k">IGST</span><span className="v">{fmtINR(taxByComp('igst'))}</span></div>
-              : <><div className="row"><span className="k">CGST</span><span className="v">{fmtINR(taxByComp('cgst'))}</span></div>
-                <div className="row"><span className="k">SGST</span><span className="v">{fmtINR(taxByComp('sgst'))}</span></div></>}
-            {(bill.charges || []).map((c, i) => <div key={i} className="row"><span className="k">{c.label}{c.tax ? ' + tax' : ''}</span><span className="v">{fmtINR(c.amount + c.tax)}</span></div>)}
-            {bill.roundOff !== 0 && <div className="row d"><span className="k">Round off</span><span className="v">{fmtINR(bill.roundOff)}</span></div>}
-            <div className="row gr"><span className="k">Grand Total · कुल</span><span className="v">{fmtINR(bill.grand)}</span></div>
-            <div className="row"><span className="k">Paid ({bill.mode === 'Credit' ? 'Udhaar' : bill.mode})</span><span className="v">{fmtINR(bill.paid)}</span></div>
-            <div className={`row bal ${bal <= 0 ? 'z' : ''}`}><span className="k">{bal <= 0 ? 'Settled ✓' : 'Balance due'}</span><span className="v">{fmtINR(Math.max(0, bal))}</span></div>
-          </div>
+        <div className="tsum">
+          <div className="h">Tax Summary (Rate-wise)</div>
+          <table>
+            <thead><tr><th style={{ width: '8%' }}>Rate</th><th>Taxable Value</th><th>CGST</th><th>SGST</th><th>IGST</th><th>Tax Amount</th></tr></thead>
+            <tbody>{(bill.slabs || []).map((sl, i) => (
+              <tr key={i}><td>{sl.rate}%</td><td className="mono">{fmtINR(sl.taxable)}</td>
+                <td className="mono">{bill.interState ? '—' : fmtINR(Math.round(sl.tax / 2))}</td>
+                <td className="mono">{bill.interState ? '—' : fmtINR(sl.tax - Math.round(sl.tax / 2))}</td>
+                <td className="mono">{bill.interState ? fmtINR(sl.tax) : '—'}</td>
+                <td className="mono"><b>{fmtINR(sl.tax)}</b></td></tr>
+            ))}
+            <tr><td colSpan={5} style={{ textAlign: 'right', fontWeight: 700 }}>Total Tax</td><td className="mono"><b>{fmtINR(bill.totalTax)}</b></td></tr></tbody>
+          </table>
         </div>
-        <div className="foot">
+        <div className="twords">
+          {paidFull ? <span className="stamp paid">PAID<small>{fmtDay(bill.date)}</small></span> : bal > 0 ? <span className="stamp due">DUE<small>{fmtINR(bal)}</small></span> : null}
+          <div className="w"><span className="k">Amount in Words:</span> <span>{inWords(bill.grand)}</span></div>
+          <div className="g"><span className="k">Grand Total</span><b>{fmtINR(bill.grand)}</b>
+            <small>{bill.roundOff ? `incl. round off ${fmtINR(bill.roundOff)}` : 'inclusive of all taxes'}</small></div>
+        </div>
+        <div className="tfoot">
           <div>
-            <div className="h">Bank / UPI — pay to “Umesh Seeds”</div>
-            <div className="l">{s.company.bank}<br />UPI ID: <b>{s.company.upi}</b><br />Payee name: <b>{s.company.legal}</b></div>
+            <div className="k">Bank / UPI Details</div>
+            <div className="l">{s.company.bank}<br />UPI ID: <b>{s.company.upi}</b><br />Payee: <b>Umesh Seeds</b></div>
+            <div className="upiqr">UPI QR<br />(scan &amp; pay)</div>
           </div>
-          <div className="upiqr">UPI QR<br/>(scan &amp; pay)<br />{s.company.upi}</div>
+          <div>
+            <div className="k">Terms &amp; Conditions / Declaration</div>
+            <div className="l">
+              1. Goods once sold cannot be taken back without bill, MRP &amp; unopened pack proof.<br />
+              2. Sowing, storage &amp; usage as per pack instructions is the buyer's responsibility; manufacturer's warranty only.<br />
+              3. Interest @ 18% p.a. on overdue credit bills. E&amp;OE.<br />
+              4. <b>Rates frozen at billing time</b> — नए catalog rate इस invoice पर apply नहीं होंगे।<br />
+              5. Subject to {s.company.stateName || 'Madhya Pradesh'} jurisdiction only.
+            </div>
+          </div>
           <div className="sign">
-            <div className="l">For {s.company.legal}<br />{s.company.gstin}</div>
-            <div className="l2">Authorised Signatory</div>
+            <div className="k">Institute's Signature</div>
+            <div className="l" style={{ marginTop: 'auto' }}>For <b>Umesh Seeds</b><br />{s.company.gstin}</div>
+            <div className="sig">Authorised Signatory</div>
           </div>
         </div>
-        <div className="decl">
-          <b>Declaration:</b> 1. Seeds/fertilizers are sold as-is per pack MRP &amp; lot — goods once sold cannot be taken back without bill, MRP &amp; unopened pack proof.
-          2. Sowing, storage &amp; usage as per pack instructions is the buyer's responsibility; warranty limited to manufacturer.
-          3. Interest @ 18% p.a. applies on overdue credit. 4. Subject to {s.company.stateName || 'Madhya Pradesh'} jurisdiction only.
-        </div>
-        {/* REQ-11: bill date + created-at + frozen-rate note */}
+        <div className="tcopy">Original for the Customer · Computer-generated invoice — no signature required if dispatched digitally</div>
+        {/* REQ-11: bill date + created stamp (kept outside the ruled sheet, Tally-style footer line) */}
         <div className="gen">
-          <span>ℹ <b>Bill date:</b> {date} · <b>Banaya gaya:</b> {created} by Umesh{bill.editedAt ? ` · last modified ${fmtTm(bill.editedAt)}` : ''}</span>
-          <span>Rates frozen at billing — नए catalog rate इस invoice पर apply नहीं होंगे · Computer-generated · UMESH SEEDS</span>
+          <span>Bill date: <b>{date}</b> · Banaya gaya: <b>{created}</b> by Umesh{bill.editedAt ? ` · last modified ${fmtTm(bill.editedAt)}` : ''} · rev {bill.revision || 1}</span>
+          <span>Printed {fmtTm(new Date())} · Page 1/1 · UMESH SMARTBILL</span>
         </div>
-        {paidFull ? <div className="stamp paid">PAID<small>{fmtDay(bill.date)}</small></div> : bal > 0 ? <div className="stamp due">DUE<small>{fmtINR(bal)}</small></div> : null}
       </div>
     </Shell>
   )

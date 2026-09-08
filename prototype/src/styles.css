@@ -265,6 +265,63 @@ tbody tr{transition:.12s}tbody tr:hover{background:var(--brand-50)}
 .inv.a5 .foot{grid-template-columns:1fr 1fr}
 .inv.a5 .upiqr{display:none}
 .inv.a5 .stamp{top:104mm;right:8mm;font-size:11pt}
+/* ============ Tally-style print sheet ============ */
+.inv.tly{border:1.1pt solid #000;color:#000;padding:5mm 6mm 3mm;font-size:8.6pt;box-shadow:0 4px 24px rgba(0,0,0,.28);background:#fff}
+.inv.tly .thd{text-align:center;border-bottom:1.1pt solid #000;padding-bottom:1.8mm}
+.inv.tly .tname{font-size:17pt;font-weight:800;letter-spacing:.14em;text-transform:uppercase;line-height:1.05}
+.inv.tly .tlegal{font-size:8.2pt;margin-top:.5mm;letter-spacing:.05em}
+.inv.tly .taddr{font-size:7.2pt;margin-top:.4mm}
+.inv.tly .tgst{font-size:7pt;margin-top:.7mm}
+.inv.tly .ttitle{display:inline-block;margin-top:1.6mm;font-size:10pt;font-weight:800;letter-spacing:.34em;padding:0 6mm;border-top:.9pt solid #000;border-bottom:.9pt solid #000;line-height:1.6}
+.inv.tly .tinfo{display:grid;grid-template-columns:repeat(3,1fr)}
+.inv.tly .tinfo .c{display:flex;gap:2mm;align-items:baseline;border:.4pt solid #000;margin:-.2pt;padding:1.1mm 2mm;min-width:0}
+.inv.tly .tinfo .c.wide{grid-column:1 / -1}
+.inv.tly .tinfo .k{font-size:6.4pt;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#222;flex:0 0 auto}
+.inv.tly .tinfo .v{font-size:7.4pt;font-family:var(--font-num);overflow-wrap:anywhere;text-align:left}
+.inv.tly .tinfo .v b{font-family:var(--font-ui)}
+.inv.tly .tab{margin:0;width:100%}
+.inv.tly .tab th,.inv.tly .tab td{border:.4pt solid #000;padding:1mm 1.6mm;font-size:7.3pt;background:#fff;color:#000}
+.inv.tly .tab thead th{background:#e8e8e8 !important;text-align:center;font-size:6.7pt;letter-spacing:.05em}
+.inv.tly .tab td:nth-child(-n+2){text-align:left}
+.inv.tly .tab td:nth-child(3){text-align:center}
+.inv.tly .tab .nm{font-size:7.5pt;font-weight:700}
+.inv.tly .tab .sub{font-size:6.3pt;color:#444}
+.inv.tly .tab .tlytot td{background:#e8e8e8 !important;font-weight:800;font-size:7.4pt}
+.inv.tly .tsum{border:.4pt solid #000;margin:-.2pt;padding:1.3mm 2mm 1mm}
+.inv.tly .tsum .h{font-size:6.4pt;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.inv.tly .tsum table{width:100%;border-collapse:collapse;font-size:6.9pt;margin-top:.8mm}
+.inv.tly .tsum th{border-bottom:.4pt solid #000;font-size:6.2pt;letter-spacing:.05em;text-transform:uppercase;padding:.9mm 1.4mm;text-align:right}
+.inv.tly .tsum th:first-child,.inv.tly .tsum td:first-child{text-align:left}
+.inv.tly .tsum td{padding:.8mm 1.4mm;text-align:right;border-bottom:.3pt dotted #999}
+.inv.tly .tsum tr:last-child td{border-bottom:0}
+.inv.tly .twords{display:flex;border:.4pt solid #000;margin:-.2pt}
+.inv.tly .twords .w{flex:1;padding:1.5mm 2mm;font-size:7.4pt;display:flex;gap:2mm;align-items:baseline}
+.inv.tly .twords .w .k{font-size:6.4pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase;flex:0 0 auto}
+.inv.tly .twords .g{flex:0 0 44mm;border-left:.4pt solid #000;padding:1.2mm 2mm;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.inv.tly .twords .g .k{font-size:6.4pt;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.inv.tly .twords .g b{font-family:var(--font-num);font-size:12pt;font-weight:800;line-height:1.2}
+.inv.tly .twords .g small{font-size:5.8pt;color:#333}
+.inv.tly .tfoot{display:grid;grid-template-columns:1fr 1.55fr .85fr;border:.4pt solid #000;margin:-.2pt}
+.inv.tly .tfoot>div{padding:1.5mm 2mm;display:flex;flex-direction:column;gap:.9mm;min-width:0}
+.inv.tly .tfoot>div+div{border-left:.4pt solid #000}
+.inv.tly .tfoot .k{font-size:6.3pt;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.inv.tly .tfoot .l{font-size:6.8pt;line-height:1.6;color:#111}
+.inv.tly .tfoot .l b{font-weight:700}
+.inv.tly .upiqr{height:15mm;margin-top:.8mm;border:.4pt dashed #000;border-radius:1mm;display:grid;place-items:center;font-size:5.6pt;text-align:center;color:#333;line-height:1.4}
+.inv.tly .sign{min-height:24mm}
+.inv.tly .sign .sig{margin-top:auto;text-align:center;border-top:.4pt solid #000;padding-top:1mm;font-size:6.6pt;color:#111}
+.inv.tly .tcopy{font-size:6pt;letter-spacing:.07em;text-transform:uppercase;color:#333;text-align:center;padding-top:1.6mm}
+.inv.tly .gen{border-top:.4pt dashed #777;background:none;padding:1.2mm 0 0;margin-top:1.6mm;font-size:6.2pt;color:#333}
+.inv.tly .twords{position:relative}
+.inv.tly .stamp{position:absolute;top:50%;right:48mm;transform:translateY(-50%) rotate(-8deg);background:#fff}
+.inv.tly.a5{width:135mm;min-height:198mm;padding:3.2mm 3.6mm;font-size:7.4pt}
+.inv.tly.a5 .tname{font-size:12.5pt}
+.inv.tly.a5 .ttitle{font-size:8pt}
+.inv.tly.a5 .tinfo{grid-template-columns:repeat(2,1fr)}
+.inv.tly.a5 .tab th,.inv.tly.a5 .tab td{padding:.7mm 1mm;font-size:6.2pt}
+.inv.tly.a5 .tsum,.inv.tly.a5 .twords,.inv.tly.a5 .tfoot{font-size:6.4pt}
+.inv.tly.a5 .sign{min-height:18mm}
+.inv.tly.a5 .stamp{right:40mm;font-size:10pt}
 /* preview backdrop + fit */
 .inv.a4,.inv.a5{transform-origin:top center}
 /* ============ thermal ============ */
